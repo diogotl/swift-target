@@ -5,7 +5,8 @@
 //  Created by Diogo on 13/07/2025.
 //
 
-protocol NewTransactionDelegate: AnyObject {
+protocol NewTransactionViewDelegate: AnyObject {
     func didSubmitTransaction()
+    func didPressBackButton()
 }
         
