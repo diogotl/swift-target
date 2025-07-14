@@ -12,9 +12,7 @@ class RootCoordinator {
     
     private var navigationController: UINavigationController?
     
-    public init() {
-        
-    }
+    public init() {}
     
     func start() -> UINavigationController? {
         let splashView = EventsListView()
@@ -33,11 +31,40 @@ class RootCoordinator {
 extension RootCoordinator: EventsListViewFlowDelegate {
     func navigateToCreateEvent() {
         let createEventView = CreateEventView()
-        let createEventController = CreateEventController(contentView: createEventView)
+        let viewModel = CreateEventViewModel()
+        
+        let createEventController = CreateEventController(
+            contentView: createEventView,
+            viewModel: viewModel,
+            coordinatorDelegate: self
+        )
         
         self.navigationController?.pushViewController(createEventController, animated: true)
         
     }
+}
+
+extension RootCoordinator: CreateEventViewFlowDelegate {
+
+       
+    
+    func navigateToCreateTransaction() {
+        
+        let contentView = NewTransactionView()
+        let newTransactionController = NewTransactionController(
+            contentView: contentView
+        )
+        
+        self.navigationController?.pushViewController(newTransactionController, animated: true)
+    }
+}
+
+extension RootCoordinator: NewTransactionViewFlowDelegate {
+    func popView() {
+        self.navigationController?.popViewController(animated: true)
+    }
+    
+    
 }
     
 
