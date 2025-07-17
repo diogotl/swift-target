@@ -40,6 +40,7 @@ class GoalCell: UITableViewCell {
     private let detailsIcon: UIImageView = {
         let icon = UIImageView(image: UIImage(systemName: "chevron.right"))
         icon.translatesAutoresizingMaskIntoConstraints = false
+        icon.tintColor = .black
         return icon
     }()
     
@@ -59,8 +60,8 @@ class GoalCell: UITableViewCell {
 
     func configure(with goal: Goal) {
         goalTitleLabel.text = goal.title
-        goalProgressView.text = "\(goal.progress)% "
-        goalAmountLabel.text = "\(goal.total)"
+        goalAmountLabel.text = "\(goal.total / goal.progress * 100)% ● \(goal.progress) of \(goal.total)"
+        //goalAmountLabel.text = "\(goal.total)"
     }
     
     private func setupConstraints() {
