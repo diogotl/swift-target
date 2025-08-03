@@ -44,6 +44,15 @@ class NewTransactionController: UIViewController {
 }
 
 extension NewTransactionController: NewTransactionViewDelegate {
+    func didPressCreateTransaction(
+        type: TransactionType,
+        amount: Double,
+        reason: String,
+    ) {
+        
+        print("Creating transaction with type: \(type), amount: \(amount), reason: \(reason)")
+    }
+    
     func didSubmitTransaction() {
         print("Transaction submitted")
     }

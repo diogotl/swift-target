@@ -5,24 +5,10 @@ class CreateEventView: UIView {
 
     public weak var delegate: CreateEventViewDelegate?
 
-    // MARK: - Design System
-    private struct Design {
-        static let primaryBlue = UIColor(red: 0.25, green: 0.32, blue: 0.71, alpha: 1.0)  // Azul do header
-        static let backgroundColor = UIColor.systemBackground
-        static let textColor = UIColor.label
-        static let placeholderColor = UIColor.placeholderText
-        static let separatorColor = UIColor.separator
-
-        static let headerHeight: CGFloat = 100
-        static let spacing: CGFloat = 24
-        static let fieldHeight: CGFloat = 50
-        static let buttonHeight: CGFloat = 56
-        static let cornerRadius: CGFloat = 12
-    }
-
+    // Substituindo Design.backgroundColor por uma cor padrão
     override init(frame: CGRect) {
         super.init(frame: frame)
-        self.backgroundColor = Design.backgroundColor
+        self.backgroundColor = UIColor.systemGray6
         setupUI()
         setupValidation()
     }
@@ -32,13 +18,6 @@ class CreateEventView: UIView {
     }
 
     // MARK: - UI Components
-
-    private let headerView: UIView = {
-        let view = UIView()
-        view.backgroundColor = Design.primaryBlue
-        view.translatesAutoresizingMaskIntoConstraints = false
-        return view
-    }()
 
     private let headerTitle: UILabel = {
         let label = UILabel()
@@ -65,9 +44,9 @@ class CreateEventView: UIView {
 
     private let descriptionLabel: UILabel = {
         let label = UILabel()
-        label.text = "Crie seu evento para organizar melhor suas atividades."
+        label.text = "Economize para alcançar sua meta financeira."
         label.font = UIFont.systemFont(ofSize: 16)
-        label.textColor = Design.textColor
+        label.textColor = UIColor.darkGray
         label.numberOfLines = 0
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -79,7 +58,7 @@ class CreateEventView: UIView {
         let label = UILabel()
         label.text = "Nome do evento"
         label.font = UIFont.systemFont(ofSize: 16)
-        label.textColor = Design.textColor
+        label.textColor = .red
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -88,7 +67,7 @@ class CreateEventView: UIView {
         let textField = UITextField()
         textField.placeholder = "Ex: Reunião de trabalho, Aniversário"
         textField.font = UIFont.systemFont(ofSize: 16)
-        textField.textColor = Design.textColor
+        textField.textColor = .blue
         textField.borderStyle = .none
         textField.translatesAutoresizingMaskIntoConstraints = false
         return textField
@@ -96,18 +75,9 @@ class CreateEventView: UIView {
 
     private let nameSeparator: UIView = {
         let view = UIView()
-        view.backgroundColor = Design.separatorColor
+        view.backgroundColor = .gray
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
-    }()
-
-    private let dateLabel: UILabel = {
-        let label = UILabel()
-        label.text = "Data do evento"
-        label.font = UIFont.systemFont(ofSize: 16)
-        label.textColor = Design.textColor
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
     }()
 
     let dateField: UIDatePicker = {
@@ -120,7 +90,7 @@ class CreateEventView: UIView {
 
     private let dateSeparator: UIView = {
         let view = UIView()
-        view.backgroundColor = Design.separatorColor
+        view.backgroundColor = .gray
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
@@ -129,7 +99,7 @@ class CreateEventView: UIView {
         let label = UILabel()
         label.text = "Local do evento"
         label.font = UIFont.systemFont(ofSize: 16)
-        label.textColor = Design.textColor
+        label.textColor = .gray
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -138,7 +108,7 @@ class CreateEventView: UIView {
         let textField = UITextField()
         textField.placeholder = "Ex: Sala de reuniões, Casa da família"
         textField.font = UIFont.systemFont(ofSize: 16)
-        textField.textColor = Design.textColor
+        textField.textColor = .gray
         textField.borderStyle = .none
         textField.translatesAutoresizingMaskIntoConstraints = false
         return textField
@@ -146,7 +116,7 @@ class CreateEventView: UIView {
 
     private let locationSeparator: UIView = {
         let view = UIView()
-        view.backgroundColor = Design.separatorColor
+        view.backgroundColor = .gray
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
@@ -155,19 +125,34 @@ class CreateEventView: UIView {
         let button = UIButton(type: .system)
         button.setTitle("Salvar", for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
-        button.backgroundColor = Design.primaryBlue
+        button.backgroundColor = .systemBlue
         button.tintColor = .white
-        button.layer.cornerRadius = Design.cornerRadius
+        button.layer.cornerRadius = 8
         button.translatesAutoresizingMaskIntoConstraints = false
+        button.addTarget(self, action: #selector(didTapSubmitButton), for: .touchUpInside)
         return button
     }()
+    
+    @objc
+    func didTapSubmitButton() {
+        guard !isFormValid() else {
+            // Show validation error
+            return
+        }
+        
+        delegate?.didSubmitEvent(
+            name: nameField.text?.trimmingCharacters(in: .whitespacesAndNewlines) ?? "",
+            date: dateField.date,
+            description: locationField.text?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        )
+    }
 
     let newTransaction: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle("Nova Transação", for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
-        button.backgroundColor = Design.primaryBlue.withAlphaComponent(0.1)
-        button.tintColor = Design.primaryBlue
+        button.backgroundColor = .systemBlue
+        button.tintColor = .white
         button.layer.cornerRadius = 8
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
@@ -176,21 +161,12 @@ class CreateEventView: UIView {
     // MARK: - Setup Methods
 
     private func setupUI() {
-        // Add main components
-        addSubview(headerView)
         addSubview(contentView)
-
-        // Header components
-        headerView.addSubview(headerTitle)
-        headerView.addSubview(backButton)
-
-        // Content components
         contentView.addSubview(descriptionLabel)
         contentView.addSubview(newTransaction)
         contentView.addSubview(nameLabel)
         contentView.addSubview(nameField)
         contentView.addSubview(nameSeparator)
-        contentView.addSubview(dateLabel)
         contentView.addSubview(dateField)
         contentView.addSubview(dateSeparator)
         contentView.addSubview(locationLabel)
@@ -203,120 +179,66 @@ class CreateEventView: UIView {
     }
 
     private func setupConstraints() {
+        let spacing: CGFloat = 16
+        let fieldHeight: CGFloat = 40
+        let buttonHeight: CGFloat = 48
+
         NSLayoutConstraint.activate([
-            // Header
-            headerView.topAnchor.constraint(equalTo: topAnchor),
-            headerView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            headerView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            headerView.heightAnchor.constraint(equalToConstant: Design.headerHeight),
-
-            // Header title
-            headerTitle.centerXAnchor.constraint(equalTo: headerView.centerXAnchor),
-            headerTitle.bottomAnchor.constraint(equalTo: headerView.bottomAnchor, constant: -16),
-
-            // Back button
-            backButton.leadingAnchor.constraint(equalTo: headerView.leadingAnchor, constant: 16),
-            backButton.centerYAnchor.constraint(equalTo: headerTitle.centerYAnchor),
-            backButton.widthAnchor.constraint(equalToConstant: 44),
-            backButton.heightAnchor.constraint(equalToConstant: 44),
-
-            // Content view
-            contentView.topAnchor.constraint(equalTo: headerView.bottomAnchor),
+            contentView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor),
             contentView.leadingAnchor.constraint(equalTo: leadingAnchor),
             contentView.trailingAnchor.constraint(equalTo: trailingAnchor),
             contentView.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor),
 
-            // Description
-            descriptionLabel.topAnchor.constraint(
-                equalTo: contentView.topAnchor, constant: Design.spacing),
-            descriptionLabel.leadingAnchor.constraint(
-                equalTo: contentView.leadingAnchor, constant: Design.spacing),
-            descriptionLabel.trailingAnchor.constraint(
-                equalTo: contentView.trailingAnchor, constant: -Design.spacing),
+            descriptionLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 8),
+            descriptionLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 8),
+            descriptionLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -8),
 
-            // New transaction button
-            newTransaction.topAnchor.constraint(
-                equalTo: descriptionLabel.bottomAnchor, constant: Design.spacing),
-            newTransaction.leadingAnchor.constraint(
-                equalTo: contentView.leadingAnchor, constant: Design.spacing),
-            newTransaction.trailingAnchor.constraint(
-                equalTo: contentView.trailingAnchor, constant: -Design.spacing),
+            newTransaction.topAnchor.constraint(equalTo: descriptionLabel.bottomAnchor, constant: 8),
+            newTransaction.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 8),
+            newTransaction.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -8),
             newTransaction.heightAnchor.constraint(equalToConstant: 44),
 
-            // Name field
-            nameLabel.topAnchor.constraint(
-                equalTo: newTransaction.bottomAnchor, constant: Design.spacing * 1.5),
-            nameLabel.leadingAnchor.constraint(
-                equalTo: contentView.leadingAnchor, constant: Design.spacing),
-            nameLabel.trailingAnchor.constraint(
-                equalTo: contentView.trailingAnchor, constant: -Design.spacing),
+            nameLabel.topAnchor.constraint(equalTo: newTransaction.bottomAnchor, constant: 12),
+            nameLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 8),
+            nameLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -spacing),
 
             nameField.topAnchor.constraint(equalTo: nameLabel.bottomAnchor, constant: 12),
-            nameField.leadingAnchor.constraint(
-                equalTo: contentView.leadingAnchor, constant: Design.spacing),
-            nameField.trailingAnchor.constraint(
-                equalTo: contentView.trailingAnchor, constant: -Design.spacing),
-            nameField.heightAnchor.constraint(equalToConstant: Design.fieldHeight),
+            nameField.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: spacing),
+            nameField.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -spacing),
+            nameField.heightAnchor.constraint(equalToConstant: fieldHeight),
 
             nameSeparator.topAnchor.constraint(equalTo: nameField.bottomAnchor),
-            nameSeparator.leadingAnchor.constraint(
-                equalTo: contentView.leadingAnchor, constant: Design.spacing),
-            nameSeparator.trailingAnchor.constraint(
-                equalTo: contentView.trailingAnchor, constant: -Design.spacing),
+            nameSeparator.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: spacing),
+            nameSeparator.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -spacing),
             nameSeparator.heightAnchor.constraint(equalToConstant: 1),
 
-            // Date field
-            dateLabel.topAnchor.constraint(
-                equalTo: nameSeparator.bottomAnchor, constant: Design.spacing),
-            dateLabel.leadingAnchor.constraint(
-                equalTo: contentView.leadingAnchor, constant: Design.spacing),
-            dateLabel.trailingAnchor.constraint(
-                equalTo: contentView.trailingAnchor, constant: -Design.spacing),
-
-            dateField.topAnchor.constraint(equalTo: dateLabel.bottomAnchor, constant: 12),
-            dateField.leadingAnchor.constraint(
-                equalTo: contentView.leadingAnchor, constant: Design.spacing),
-            dateField.trailingAnchor.constraint(
-                equalTo: contentView.trailingAnchor, constant: -Design.spacing),
-            dateField.heightAnchor.constraint(equalToConstant: Design.fieldHeight),
+            dateField.topAnchor.constraint(equalTo: nameSeparator.bottomAnchor, constant: spacing),
+            dateField.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: spacing),
+            dateField.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -spacing),
 
             dateSeparator.topAnchor.constraint(equalTo: dateField.bottomAnchor),
-            dateSeparator.leadingAnchor.constraint(
-                equalTo: contentView.leadingAnchor, constant: Design.spacing),
-            dateSeparator.trailingAnchor.constraint(
-                equalTo: contentView.trailingAnchor, constant: -Design.spacing),
+            dateSeparator.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: spacing),
+            dateSeparator.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -spacing),
             dateSeparator.heightAnchor.constraint(equalToConstant: 1),
 
-            // Location field
-            locationLabel.topAnchor.constraint(
-                equalTo: dateSeparator.bottomAnchor, constant: Design.spacing),
-            locationLabel.leadingAnchor.constraint(
-                equalTo: contentView.leadingAnchor, constant: Design.spacing),
-            locationLabel.trailingAnchor.constraint(
-                equalTo: contentView.trailingAnchor, constant: -Design.spacing),
+            locationLabel.topAnchor.constraint(equalTo: dateSeparator.bottomAnchor, constant: spacing),
+            locationLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: spacing),
+            locationLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -spacing),
 
             locationField.topAnchor.constraint(equalTo: locationLabel.bottomAnchor, constant: 12),
-            locationField.leadingAnchor.constraint(
-                equalTo: contentView.leadingAnchor, constant: Design.spacing),
-            locationField.trailingAnchor.constraint(
-                equalTo: contentView.trailingAnchor, constant: -Design.spacing),
-            locationField.heightAnchor.constraint(equalToConstant: Design.fieldHeight),
+            locationField.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: spacing),
+            locationField.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -spacing),
+            locationField.heightAnchor.constraint(equalToConstant: fieldHeight),
 
             locationSeparator.topAnchor.constraint(equalTo: locationField.bottomAnchor),
-            locationSeparator.leadingAnchor.constraint(
-                equalTo: contentView.leadingAnchor, constant: Design.spacing),
-            locationSeparator.trailingAnchor.constraint(
-                equalTo: contentView.trailingAnchor, constant: -Design.spacing),
+            locationSeparator.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: spacing),
+            locationSeparator.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -spacing),
             locationSeparator.heightAnchor.constraint(equalToConstant: 1),
 
-            // Submit button
-            submitButton.topAnchor.constraint(
-                equalTo: locationSeparator.bottomAnchor, constant: Design.spacing * 2),
-            submitButton.leadingAnchor.constraint(
-                equalTo: contentView.leadingAnchor, constant: Design.spacing),
-            submitButton.trailingAnchor.constraint(
-                equalTo: contentView.trailingAnchor, constant: -Design.spacing),
-            submitButton.heightAnchor.constraint(equalToConstant: Design.buttonHeight),
+            submitButton.topAnchor.constraint(equalTo: locationSeparator.bottomAnchor, constant: spacing * 2),
+            submitButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: spacing),
+            submitButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -spacing),
+            submitButton.heightAnchor.constraint(equalToConstant: buttonHeight),
         ])
     }
 
@@ -352,7 +274,6 @@ class CreateEventView: UIView {
         let date = dateField.date
         let description = locationField.text!.trimmingCharacters(in: .whitespacesAndNewlines)
 
-        // Loading state
         submitButton.isEnabled = false
         submitButton.setTitle("Salvando...", for: .normal)
         submitButton.alpha = 0.7
@@ -366,21 +287,16 @@ class CreateEventView: UIView {
     // MARK: - Validation & Helpers
 
     func isFormValid() -> Bool {
-        let hasName =
-            !(nameField.text?.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ?? true)
-        let hasLocation =
-            !(locationField.text?.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ?? true)
-
+        let hasName = !(nameField.text?.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ?? true)
+        let hasLocation = !(locationField.text?.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ?? true)
         return hasName && hasLocation
     }
 
     private func updateSubmitButtonState() {
         let isValid = isFormValid()
-
         UIView.animate(withDuration: 0.2) {
             self.submitButton.alpha = isValid ? 1.0 : 0.6
-            self.submitButton.backgroundColor =
-                isValid ? Design.primaryBlue : Design.primaryBlue.withAlphaComponent(0.6)
+            self.submitButton.backgroundColor = isValid ? .systemBlue : .systemRed
         }
     }
 
@@ -388,6 +304,6 @@ class CreateEventView: UIView {
         submitButton.isEnabled = true
         submitButton.setTitle("Salvar", for: .normal)
         submitButton.alpha = 1.0
-        submitButton.backgroundColor = Design.primaryBlue
+        submitButton.backgroundColor = .systemBlue
     }
 }

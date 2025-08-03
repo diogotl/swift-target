@@ -4,12 +4,16 @@ import UIKit
 class RootCoordinator {
 
     private var navigationController: UINavigationController?
+    
+    private let metaContext = MetaContext()
 
     public init() {}
 
     func start() -> UINavigationController? {
         let splashView = EventsListView()
-        let viewModel = GoalsViewModel()
+        let viewModel = GoalsViewModel(
+            context: metaContext
+        )
         let startViewController = EventsListViewController(
             contentView: splashView,
             viewModel: viewModel,
@@ -26,7 +30,9 @@ extension RootCoordinator: EventsListViewFlowDelegate {
 
     func navigateToCreateEvent() {
         let createEventView = CreateEventView()
-        let viewModel = CreateEventViewModel()
+        let viewModel = CreateEventViewModel(
+            metaContext: metaContext
+        )
 
         let createEventController = CreateEventController(
             contentView: createEventView,
@@ -38,13 +44,13 @@ extension RootCoordinator: EventsListViewFlowDelegate {
 
     }
 
-    func navigateToGoalDetails(goal: Goal) {
+    func navigateToGoalDetails(meta: Meta) {
         let goalDetailsView = GoalDetailsView(
-            goal: goal
+            goal: meta
         )
 
         let goalDetailsController = GoalsDetailsViewController(
-            goal: goal,
+            goal: meta,
             contentView: goalDetailsView,
         )
 

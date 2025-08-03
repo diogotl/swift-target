@@ -8,6 +8,16 @@
 import Foundation
 
 class CreateEventViewModel {
+    
+    let metaContext: MetaContext
+    
+    init(
+        metaContext: MetaContext
+    ){
+        self.metaContext = metaContext
+    }
+    
+   var onMetasChanged: (() -> Void)?
 
     func submitEvent(
         name: String, date: Date, description: String, completion: @escaping (Bool) -> Void
@@ -17,6 +27,16 @@ class CreateEventViewModel {
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
             print("Event submitted with name: \(name), date: \(date), description: \(description)")
             completion(true)
+        }
+    }
+    
+    
+    func addGoal(title: String, total: Int, completion: @escaping (Bool) -> Void) {
+        let newGoal = Meta(title: title, total: total)
+        let success = metaContext.addMeta(meta: newGoal)
+        onMetasChanged?()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            completion(success)
         }
     }
 }

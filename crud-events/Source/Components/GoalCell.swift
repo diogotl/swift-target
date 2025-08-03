@@ -58,9 +58,16 @@ class GoalCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
 
-    func configure(with goal: Goal) {
+    func configure(with goal: Meta) {
         goalTitleLabel.text = goal.title
-        goalAmountLabel.text = "\(goal.total / goal.progress * 100)% ● \(goal.progress) of \(goal.total)"
+        
+        
+        if goal.progress == 0 {
+            goalAmountLabel.text = "0% ● \(goal.progress) of \(goal.total)"
+        } else {
+            goalAmountLabel.text = "\(goal.total / goal.progress * 100)% ● \(goal.progress) of \(goal.total)"
+        }
+
         //goalAmountLabel.text = "\(goal.total)"
     }
     

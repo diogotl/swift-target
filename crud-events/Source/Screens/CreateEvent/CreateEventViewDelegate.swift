@@ -12,3 +12,4 @@ protocol CreateEventViewDelegate: AnyObject {
     func didPressNavigateToCreateTransaction()
     func didPressBackButton()
 }
+

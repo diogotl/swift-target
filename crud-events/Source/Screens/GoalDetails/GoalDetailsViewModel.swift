@@ -1,9 +1,9 @@
 import Foundation
 
 class GoalDetailsViewModel {
-    private let goal: Goal
+    private let goal: Meta
     
-    init(goal: Goal) {
+    init(goal: Meta) {
         self.goal = goal
     }
     
