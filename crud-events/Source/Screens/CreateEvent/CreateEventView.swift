@@ -5,7 +5,6 @@ class CreateEventView: UIView {
 
     public weak var delegate: CreateEventViewDelegate?
 
-    // Substituindo Design.backgroundColor por uma cor padrão
     override init(frame: CGRect) {
         super.init(frame: frame)
         self.backgroundColor = UIColor.systemGray6
@@ -58,7 +57,7 @@ class CreateEventView: UIView {
         let label = UILabel()
         label.text = "Nome do evento"
         label.font = UIFont.systemFont(ofSize: 16)
-        label.textColor = .red
+        label.textColor = .gray
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -74,21 +73,6 @@ class CreateEventView: UIView {
     }()
 
     private let nameSeparator: UIView = {
-        let view = UIView()
-        view.backgroundColor = .gray
-        view.translatesAutoresizingMaskIntoConstraints = false
-        return view
-    }()
-
-    let dateField: UIDatePicker = {
-        let datePicker = UIDatePicker()
-        datePicker.datePickerMode = .dateAndTime
-        datePicker.preferredDatePickerStyle = .compact
-        datePicker.translatesAutoresizingMaskIntoConstraints = false
-        return datePicker
-    }()
-
-    private let dateSeparator: UIView = {
         let view = UIView()
         view.backgroundColor = .gray
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -142,33 +126,22 @@ class CreateEventView: UIView {
         
         delegate?.didSubmitEvent(
             name: nameField.text?.trimmingCharacters(in: .whitespacesAndNewlines) ?? "",
-            date: dateField.date,
+            date: Date(),
             description: locationField.text?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
         )
     }
 
-    let newTransaction: UIButton = {
-        let button = UIButton(type: .system)
-        button.setTitle("Nova Transação", for: .normal)
-        button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
-        button.backgroundColor = .systemBlue
-        button.tintColor = .white
-        button.layer.cornerRadius = 8
-        button.translatesAutoresizingMaskIntoConstraints = false
-        return button
-    }()
 
     // MARK: - Setup Methods
 
     private func setupUI() {
         addSubview(contentView)
         contentView.addSubview(descriptionLabel)
-        contentView.addSubview(newTransaction)
         contentView.addSubview(nameLabel)
         contentView.addSubview(nameField)
         contentView.addSubview(nameSeparator)
-        contentView.addSubview(dateField)
-        contentView.addSubview(dateSeparator)
+        //contentView.addSubview(dateField)
+        //contentView.addSubview(dateSeparator)
         contentView.addSubview(locationLabel)
         contentView.addSubview(locationField)
         contentView.addSubview(locationSeparator)
@@ -193,12 +166,7 @@ class CreateEventView: UIView {
             descriptionLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 8),
             descriptionLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -8),
 
-            newTransaction.topAnchor.constraint(equalTo: descriptionLabel.bottomAnchor, constant: 8),
-            newTransaction.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 8),
-            newTransaction.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -8),
-            newTransaction.heightAnchor.constraint(equalToConstant: 44),
-
-            nameLabel.topAnchor.constraint(equalTo: newTransaction.bottomAnchor, constant: 12),
+            nameLabel.topAnchor.constraint(equalTo: descriptionLabel.bottomAnchor, constant: 12),
             nameLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 8),
             nameLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -spacing),
 
@@ -212,16 +180,7 @@ class CreateEventView: UIView {
             nameSeparator.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -spacing),
             nameSeparator.heightAnchor.constraint(equalToConstant: 1),
 
-            dateField.topAnchor.constraint(equalTo: nameSeparator.bottomAnchor, constant: spacing),
-            dateField.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: spacing),
-            dateField.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -spacing),
-
-            dateSeparator.topAnchor.constraint(equalTo: dateField.bottomAnchor),
-            dateSeparator.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: spacing),
-            dateSeparator.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -spacing),
-            dateSeparator.heightAnchor.constraint(equalToConstant: 1),
-
-            locationLabel.topAnchor.constraint(equalTo: dateSeparator.bottomAnchor, constant: spacing),
+            locationLabel.topAnchor.constraint(equalTo: nameSeparator.bottomAnchor, constant: spacing),
             locationLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: spacing),
             locationLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -spacing),
 
@@ -244,7 +203,7 @@ class CreateEventView: UIView {
 
     private func setupActions() {
         backButton.addTarget(self, action: #selector(backTapped), for: .touchUpInside)
-        newTransaction.addTarget(self, action: #selector(newTransactionTapped), for: .touchUpInside)
+        //newTransaction.addTarget(self, action: #selector(newTransactionTapped), for: .touchUpInside)
         submitButton.addTarget(self, action: #selector(submitTapped), for: .touchUpInside)
     }
 
@@ -271,7 +230,7 @@ class CreateEventView: UIView {
         guard isFormValid() else { return }
 
         let name = nameField.text!.trimmingCharacters(in: .whitespacesAndNewlines)
-        let date = dateField.date
+       // let date = dateField.date
         let description = locationField.text!.trimmingCharacters(in: .whitespacesAndNewlines)
 
         submitButton.isEnabled = false
@@ -279,7 +238,7 @@ class CreateEventView: UIView {
         submitButton.alpha = 0.7
 
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-            self.delegate?.didSubmitEvent(name: name, date: date, description: description)
+            self.delegate?.didSubmitEvent(name: name, date: Date(), description: description)
             self.resetForm()
         }
     }

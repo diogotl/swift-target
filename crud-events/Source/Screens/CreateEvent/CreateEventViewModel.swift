@@ -32,7 +32,13 @@ class CreateEventViewModel {
     
     
     func addGoal(title: String, total: Int, completion: @escaping (Bool) -> Void) {
-        let newGoal = Meta(title: title, total: total)
+        print("Adding goal with title: \(title), total: \(total)")
+        let newGoal = Meta(
+            id: UUID(),
+            title: title,
+            progress: 0,
+            total: total
+        )
         let success = metaContext.addMeta(meta: newGoal)
         onMetasChanged?()
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
