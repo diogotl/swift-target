@@ -5,11 +5,13 @@ class Meta: Codable {
     let title: String
     let progress: Int
     let total: Int
+    let transactions: [Transaction]
 
-    init(title: String, total: Int) {
-        self.id = UUID()
+    init(id: UUID, title: String, progress: Int, total: Int, transactions: [Transaction] = []) {
+        self.id = id
         self.title = title
-        self.progress = 0
+        self.progress = progress
         self.total = total
+        self.transactions = transactions
     }
 }
