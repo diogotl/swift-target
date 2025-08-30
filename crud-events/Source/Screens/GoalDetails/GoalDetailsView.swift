@@ -2,11 +2,10 @@ import Foundation
 import UIKit
 
 class GoalDetailsView: UIView {
-    private let goal: Meta
     
     weak var delegate: GoalDetailsViewDelegate?
         
-    private let nameLabel: UILabel = {
+    let nameLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.boldSystemFont(ofSize: 24)
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -26,7 +25,6 @@ class GoalDetailsView: UIView {
         button.setImage(
             UIImage(systemName: "pencil"),
             for: .normal
-            
         )
         button.translatesAutoresizingMaskIntoConstraints = false
         
@@ -41,22 +39,24 @@ class GoalDetailsView: UIView {
     let newTransactionButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle("New Transaction", for: .normal)
+        button.backgroundColor = UIColor.systemBlue
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.addTarget(self, action: #selector(ditTapNewTrasactionButton), for: .touchUpInside)
+        button.addTarget(self, action: #selector(editTapNewTrasactionButton), for: .touchUpInside)
         return button
     }()
     
     @objc
-    private func ditTapNewTrasactionButton() {
-        delegate?.didTapNewTransactionButton(goal: goal)
+    private func editTapNewTrasactionButton() {
+        print("DEBUG: editTapNewTrasactionButton chamado em GoalDetailsView")
+        delegate?.didTapNewTransactionButton()
     }
     
-    init(goal: Meta, frame: CGRect = .zero) {
-        self.goal = goal
+    override init(
+        frame: CGRect = .zero
+    ) {
         super.init(frame: frame)
         self.backgroundColor = .white
         setupUI()
-        nameLabel.text = goal.title
     }
     
     required init?(coder: NSCoder) {
@@ -83,14 +83,14 @@ class GoalDetailsView: UIView {
             transactionsTableView.topAnchor.constraint(equalTo: nameLabel.bottomAnchor, constant: 16),
             transactionsTableView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 16),
             transactionsTableView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -16),
+            transactionsTableView.bottomAnchor.constraint(equalTo: newTransactionButton.topAnchor, constant: -16),
            
             
             newTransactionButton.topAnchor.constraint(equalTo: transactionsTableView.bottomAnchor, constant: 16),
             newTransactionButton.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 16),
             newTransactionButton.bottomAnchor.constraint(equalTo: self.safeAreaLayoutGuide.bottomAnchor, constant: -16),
             newTransactionButton.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -16),
-            newTransactionButton.heightAnchor.constraint(equalToConstant: 44)
-            
+            newTransactionButton.heightAnchor.constraint(equalToConstant: 48)
         ])
     }
 }
