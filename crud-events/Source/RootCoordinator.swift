@@ -1,11 +1,13 @@
+import CoreData
 import Foundation
 import UIKit
 
 class RootCoordinator {
 
     private var navigationController: UINavigationController?
-    
+
     private let metaContext = MetaContext()
+    private let transactionContext = TransactionContext()
 
     public init() {}
 
@@ -44,14 +46,20 @@ extension RootCoordinator: EventsListViewFlowDelegate {
 
     }
 
-    func navigateToGoalDetails(meta: Meta) {
-        let goalDetailsView = GoalDetailsView(
-            goal: meta
+    func navigateToGoalDetails(
+        metaId: UUID
+    ) {
+        let goalDetailsView = GoalDetailsView()
+        let viewModel = GoalDetailsViewModel(
+            id: metaId,
+            context: metaContext
         )
 
         let goalDetailsController = GoalsDetailsViewController(
-            goal: meta,
+            goalId: metaId,
             contentView: goalDetailsView,
+            viewModel: viewModel,
+            coordinatorDelegate: self
         )
 
         self.navigationController?.pushViewController(goalDetailsController, animated: true)
@@ -63,8 +71,13 @@ extension RootCoordinator: CreateEventViewFlowDelegate {
     func navigateToCreateTransaction() {
 
         let contentView = NewTransactionView()
+        let viewModel = NewTransactionViewModel(
+            transactionContext: transactionContext
+        )
         let newTransactionController = NewTransactionController(
-            contentView: contentView
+            contentView: contentView,
+            viewModel:viewModel,
+            coordinatorDelegate: self
         )
 
         self.navigationController?.pushViewController(newTransactionController, animated: true)
@@ -75,4 +88,26 @@ extension RootCoordinator: NewTransactionViewFlowDelegate {
     func popView() {
         self.navigationController?.popViewController(animated: true)
     }
+}
+
+extension RootCoordinator: GoalsDetailsViewFlowDelegate {
+    func didPressEditGoal() {
+        print("DEBUG: Edit goal pressed")
+    }
+    
+    func goToCreateTransaction(goalId: UUID) {
+        let contentView = NewTransactionView()
+        let viewModel = NewTransactionViewModel(
+            transactionContext: transactionContext,
+            id: goalId
+        )
+        let newTransactionController = NewTransactionController(
+            contentView: contentView,
+            viewModel: viewModel,
+            coordinatorDelegate: self
+        )
+
+        self.navigationController?.pushViewController(newTransactionController, animated: true)
+    }
+    
 }
