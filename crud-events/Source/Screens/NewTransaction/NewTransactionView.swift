@@ -84,8 +84,12 @@ class NewTransactionView: UIView {
 
     @objc
     private func submitTapped() {
-        // Handle submit action
-        print("Submit button tapped")
+        delegate?.didPressCreateTransaction(
+            type: segmentedControl.selectedSegmentIndex == 0 ? .income : .expense,
+            amount: Double(amountField.text ?? "") ?? 0.0,
+            reason: reasaonField.text ?? ""
+            
+        )
     }
 
     @objc
