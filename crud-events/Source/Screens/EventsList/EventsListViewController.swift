@@ -20,19 +20,18 @@ class EventsListViewController: UIViewController {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         viewModel.goals = viewModel.fetchGoals()
         contentView.tableView.reloadData()
     }
 
-
     override func viewDidLoad() {
         super.viewDidLoad()
         self.contentView.delegate = self
         setup()
-        
+
         viewModel.onMetasChanged = { [weak self] in
             self?.contentView.tableView.reloadData()
         }
@@ -66,8 +65,10 @@ class EventsListViewController: UIViewController {
 }
 
 extension EventsListViewController: EventsListViewFlowDelegate {
-    func navigateToGoalDetails(meta: Meta) {
-        coordinatorDelegate?.navigateToGoalDetails(meta: meta)
+    func navigateToGoalDetails(metaId meta: UUID) {
+        coordinatorDelegate?.navigateToGoalDetails(
+            metaId: meta
+        )
     }
 
     func navigateToCreateEvent() {
@@ -91,6 +92,9 @@ extension EventsListViewController: UITableViewDataSource, UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let goal = viewModel.goals[indexPath.row]
-        coordinatorDelegate?.navigateToGoalDetails(meta: goal)
+        print("DEBUG: Célula selecionada na lista de metas. goal.id =", goal.id)
+        coordinatorDelegate?.navigateToGoalDetails(
+            metaId: goal.id
+        )
     }
 }

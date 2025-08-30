@@ -247,8 +247,6 @@ class EventsListView: UIView {
             tableView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -20),
             tableView.bottomAnchor.constraint(equalTo: button.topAnchor, constant: -20),
 
-            button.centerXAnchor.constraint(equalTo: self.centerXAnchor),
-            button.widthAnchor.constraint(equalToConstant: 200),
             button.heightAnchor.constraint(equalToConstant: 44),
             button.bottomAnchor.constraint(
                 equalTo: self.safeAreaLayoutGuide.bottomAnchor, constant: -20),

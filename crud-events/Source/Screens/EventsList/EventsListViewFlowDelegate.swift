@@ -1,4 +1,7 @@
+import Foundation
+import UIKit
+
 protocol EventsListViewFlowDelegate: AnyObject {
     func navigateToCreateEvent()
-    func navigateToGoalDetails(meta: Meta)
+    func navigateToGoalDetails(metaId: UUID)
 }

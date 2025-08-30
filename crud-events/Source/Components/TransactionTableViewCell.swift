@@ -77,7 +77,7 @@ class TransactionTableViewCell: UITableViewCell {
         } else {
             iconImageView.image = UIImage(systemName: "arrow.down.circle.fill")
         }
-        amountLabel.text = transaction.amount
+        amountLabel.text = String(format: "%.2f", transaction.amount)
         descriptionLabel.text = "\(transaction.date) \(transaction.description)"
     }
 
